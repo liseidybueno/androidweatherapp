@@ -15,9 +15,7 @@ import android.os.IBinder
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.EditText
 import android.widget.RadioButton
-import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
@@ -48,6 +46,12 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     }
 
+    private lateinit var presenter: MainContract.Presenter
+
+    private var sharedPref: SharedPreferences ?= null
+
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -58,19 +62,33 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         and chooses units.
          */
 
+
+        presenter = MainPresenter(this)
+        sharedPref = getSharedPreferences("loggedIn", Context.MODE_PRIVATE)
+
+        val user = sharedPref!!.getString("name", "")
+        val units = sharedPref!!.getString("units", "")
+
+        if(user  == "" || user == null){
+            presenter.start()
+        } else {
+            presenter.startLoggedIn(user, units!!)
+        }
+
+        println("on create: " + sharedPref!!.getString("name", ""))
+
         //  get the braodcast receiver
         broadcastReceiver = LocationBroadcastReceiver()
 
         nextBtn.setOnClickListener{
 
-            if(permissionApproved()){
+            presenter.onBtnClick()
 
-                locationService?.subscribeToLocationUpdates() ?: println("location service not bound")
+        }
 
-            } else {
-                requestLocationPermissions()
-            }
+        getForecastBtn.setOnClickListener() {
 
+            presenter.startWeatherActivity()
         }
 
     }
@@ -83,6 +101,102 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     }
 
     //VIEW FUNCTIONS
+    override fun getPermissions(){
+
+        if(permissionApproved()){
+
+            locationService?.subscribeToLocationUpdates() ?: println("location service not bound")
+
+        } else {
+
+            requestLocationPermissions()
+        }
+    }
+
+    override fun setUpUINotLoggedIn(){
+
+        var welcome_text = ""
+        var welcome_msg = ""
+        var enter_name = ""
+        var choose_units = ""
+        var metric_text = ""
+        var imperial_text = ""
+        var next_btn = ""
+
+        welcome_text = "Welcome to Quickcast!"
+        welcome_msg = "Thanks for using our app! Since this is your first time here, " +
+                    "please set your preferences below."
+        enter_name = "Enter your name"
+        choose_units = "Choose Units"
+        metric_text = "Metric"
+        imperial_text = "Imperial"
+        next_btn = "Save Info"
+
+        welcomeMsg.text = welcome_msg
+        firstName.hint = enter_name
+        welcomeText.text = welcome_text
+        unitsText.hint = choose_units
+        metric.text = metric_text
+        imperial.text = imperial_text
+        nextBtn.text = next_btn
+
+        getForecastBtn.visibility = View.GONE
+    }
+
+    override fun setUpUILoggedIn(user: String, units: String){
+        val welcome_text = "Welcome back, $user!"
+        val welcome_msg = "Your units are set to $units"
+        //var next_btn = ""
+        val get_forecastBtn = "Get Forecast"
+
+        //next_btn = "Get Forecast"
+
+        welcomeMsg.text = welcome_msg
+        firstName.visibility = View.GONE
+        unitsText.visibility = View.GONE
+        welcomeText.text = welcome_text
+        unitsradiogroup.visibility = View.GONE
+        nextBtn.visibility = View.GONE
+        getForecastBtn.text = get_forecastBtn
+
+    }
+
+    override fun changeUiOnBtnClick(user: String, units: String){
+
+        val thankYouText = "Thanks, $user. \n You preferred units are $units."
+        val get_forecastBtn = "Get Forecast"
+
+        welcomeMsg.text = thankYouText
+        nextBtn.visibility = View.GONE
+        getForecastBtn.visibility = View.VISIBLE
+        getForecastBtn.text = get_forecastBtn
+
+        firstName.visibility = View.GONE
+        unitsradiogroup.visibility = View.GONE
+        unitsText.visibility = View.GONE
+
+        // store into shared preferences
+        sharedPref!!.edit().putString("name", user).apply()
+        sharedPref!!.edit().putString("units", units).apply()
+
+
+    }
+
+    override fun getName(): String{
+
+        val name = firstName
+        val firstName = name.text.toString()
+
+        return firstName
+    }
+
+    override fun getUnits(): String{
+        val radioGroupId = unitsradiogroup.checkedRadioButtonId
+        val radioGroup:RadioButton = findViewById(radioGroupId)
+        val units = radioGroup.text.toString()
+
+        return units
+    }
 
     override fun createSnackbar(){
 
@@ -91,25 +205,23 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     }
 
-    override fun setUpUIFirstTimeLogin(){
+    override fun checkFields(): Boolean {
 
-        val welcome_text = "Welcome to Quickcast!"
-        val welcome_msg = "Thanks for using our app! Since this is your first time here, " +
-                "please set your preferences below."
-        val enter_name = "Enter your name"
-        val choose_units = "Choose Units"
-        val metric_text = "Metric"
-        val imperial_text = "Imperial"
-        val next_btn = "Get Forecast"
+        return !(firstName.text.toString() == "" || unitsradiogroup.getCheckedRadioButtonId() == -1)
 
+    }
 
-        welcomeText.text = welcome_text
-        welcomeMsg.text = welcome_msg
-        firstName.hint = enter_name
-        units.hint = choose_units
-        metric.text = metric_text
-        imperial.text = imperial_text
-        nextBtn.text = next_btn
+    override fun startNewActivity(location: Location){
+
+        val lat = location.latitude.toString()
+        val lon = location.longitude.toString()
+
+        val intent = Intent(applicationContext, WeatherActivity::class.java)
+        intent.putExtra("latitude", lat)
+        intent.putExtra("longitude", lon)
+
+        startActivity(intent)
+
     }
 
     //PRIVATE FUNCTIONS - LOCATION SERVICE
@@ -190,34 +302,20 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     }
 
-    fun startNewActivity(location: Location){
-
-        val lat = location.latitude.toString()
-        val lon = location.longitude.toString()
-
-        val intent = Intent(applicationContext, WeatherActivity::class.java)
-        intent.putExtra("latitude", lat)
-        intent.putExtra("longitude", lon)
-
-        startActivity(intent)
-
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
     }
 
-
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        menuInflater.inflate(R.menu.menu_main, menu)
-//        return true
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        val id = item.itemId
-//        return if (id == R.id.action_settings) {
-//            true
-//        } else super.onOptionsItemSelected(item)
-//    }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        val id = item.itemId
+        return if (id == R.id.action_settings) {
+            true
+        } else super.onOptionsItemSelected(item)
+    }
 
 }

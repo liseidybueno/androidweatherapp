@@ -54,7 +54,7 @@
             android:layout_margin="16dp" />
 
         <TextView
-            android:id="@+id/units"
+            android:id="@+id/unitsText"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -84,6 +84,13 @@
 
         <Button
             android:id="@+id/nextBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="8dp" />
+
+        <Button
+            android:id="@+id/getForecastBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
