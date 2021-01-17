@@ -6,12 +6,15 @@ package com.onramp.android.takehome
  * if they have logged in, go straight to weather activity
  */
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.*
 import android.content.pm.PackageManager
 import android.location.Location
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
+import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -200,7 +203,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     override fun createSnackbar(){
 
-        val snackbar = Snackbar.make(relativeLayout, "Fields cannot be empty.", Snackbar.LENGTH_LONG)
+        val snackbar = Snackbar.make(mainActivity, "Fields cannot be empty.", Snackbar.LENGTH_LONG)
         snackbar.show()
 
     }
@@ -267,6 +270,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        println(grantResults[0])
         when(requestCode) {
             PERMISSION_REQUEST_CODE -> when {
                 grantResults.isEmpty() ->
@@ -275,8 +279,29 @@ class MainActivity : AppCompatActivity(), MainContract.View {
                     println("permission granted")
                     locationService?.subscribeToLocationUpdates()
                 }
-            } else -> {
-                println("permission denied")
+              else -> {
+                  println("permission denied")
+                  //create snackbar if permission is denied
+                  Snackbar.make(
+                          findViewById(R.id.mainActivity),
+                          "Location service permission is off. Please turn on to use this app.",
+                          Snackbar.LENGTH_LONG
+                  )
+                          .setAction("GO TO SETTINGS") {
+                              //go to app settings
+                              val intent = Intent()
+                              intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                              val uri = Uri.fromParts(
+                                      "package",
+                                      BuildConfig.APPLICATION_ID,
+                                      null
+                              )
+                              intent.data = uri
+                              intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                              startActivity(intent)
+                          }
+                          .show()
+              }
             }
         }
     }
