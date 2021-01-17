@@ -14,7 +14,6 @@ interface MainContract {
 
         fun checkFields(): Boolean
 
-        fun startNewActivity(location: Location)
 
         fun getPermissions()
 

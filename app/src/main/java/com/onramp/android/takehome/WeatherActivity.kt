@@ -8,6 +8,8 @@ package com.onramp.android.takehome
  * OR create fragment for what to wear
  */
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_weather.*
@@ -15,15 +17,22 @@ import kotlinx.android.synthetic.main.activity_weather.*
 
 class WeatherActivity : AppCompatActivity() {
 
+    private var sharedPref: SharedPreferences?= null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather)
 
-        val lat = intent.getStringExtra("latitude")
-        val lon = intent.getStringExtra("longitude")
+        sharedPref = getSharedPreferences("loggedIn", Context.MODE_PRIVATE)
 
+        val lat = sharedPref!!.getString("lat", "")
+        val lon = sharedPref!!.getString("lon", "")
 
-        weatherText.text = "Lat: $lat and Lon: $lon"
+//        val lat = intent.getStringExtra("latitude")
+//        val lon = intent.getStringExtra("longitude")
+        val text = "Lat: $lat and Lon: $lon"
+
+        weatherText.text = text
 
 
     }

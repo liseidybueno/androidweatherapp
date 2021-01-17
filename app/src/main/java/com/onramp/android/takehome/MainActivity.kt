@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
         }
 
-        getForecastBtn.setOnClickListener() {
+        getForecastBtn.setOnClickListener {
 
             presenter.startWeatherActivity()
         }
@@ -214,14 +214,14 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     }
 
-    override fun startNewActivity(location: Location){
+    fun startNewActivity(){
 
-        val lat = location.latitude.toString()
-        val lon = location.longitude.toString()
+//        val lat = location.latitude.toString()
+//        val lon = location.longitude.toString()
 
         val intent = Intent(applicationContext, WeatherActivity::class.java)
-        intent.putExtra("latitude", lat)
-        intent.putExtra("longitude", lon)
+//        intent.putExtra("latitude", lat)
+//        intent.putExtra("longitude", lon)
 
         startActivity(intent)
 
@@ -320,7 +320,9 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
             if(location != null) {
 
-                startNewActivity(location)
+                sharedPref!!.edit().putString("lat", location.latitude.toString()).apply()
+                sharedPref!!.edit().putString("lon", location.longitude.toString()).apply()
+                startNewActivity()
 
             }
         }
