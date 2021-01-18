@@ -72,19 +72,11 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         val user = sharedPref!!.getString("name", "")
         val units = sharedPref!!.getString("units", "")
 
-       // println(AppPref.name)
-//        AppPref.setup(this)
-
-//        val user = AppPref.name
-//        val units = AppPref.units
-//
         if(user  == "" || user == null){
             presenter.start()
         } else {
             presenter.startLoggedIn(user, units!!)
         }
-
-//        println("on create: " + sharedPref!!.getString("name", ""))
 
         //  get the braodcast receiver
         broadcastReceiver = LocationBroadcastReceiver()
@@ -323,4 +315,5 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         }
 
     }
+
 }

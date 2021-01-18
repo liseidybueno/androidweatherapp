@@ -1,5 +1,9 @@
 package com.onramp.android.takehome
 
+import android.content.Context
+import android.content.res.Resources
+import android.provider.Settings.Global.getString
+import android.provider.Settings.System.getString
 import com.onramp.android.takehome.weatherNetworking.OWDEndpoints
 import com.onramp.android.takehome.weatherNetworking.ServiceBuilder
 import retrofit2.Call
@@ -21,11 +25,11 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
         val long = coord?.get(1).toString()
         val units = coord?.get(2).toString().toLowerCase(Locale.ROOT)
         val exclude = "minutely,hourly,alerts"
-        val apiKey = "cc9e3fecd2292d42405981b808cbca2b"
+        val api_key = App.getResource().getString(R.string.api_key)
 
         val request = ServiceBuilder.buildService(OWDEndpoints::class.java)
 
-        val call = request.getCurrentWeatherData(lat, long, exclude, units, apiKey)
+        val call = request.getCurrentWeatherData(lat, long, exclude, units, api_key)
 
         call.enqueue(object : Callback<CurrentWeatherResponse>{
 
