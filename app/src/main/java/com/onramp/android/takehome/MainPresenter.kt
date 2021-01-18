@@ -33,8 +33,6 @@ class MainPresenter(
                 view?.changeUiOnBtnClick(user!!, units!!)
             }, 1500)
 
-
-
         }
 
     }

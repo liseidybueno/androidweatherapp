@@ -13,26 +13,51 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_weather.*
+import retrofit2.Response
 
 
-class WeatherActivity : AppCompatActivity() {
+class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
 
     private var sharedPref: SharedPreferences?= null
+
+    private lateinit var presenter: CurrentWeatherContract.Presenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_weather)
 
+        getSharedPref()
+
+        presenter = CurrentWeatherPresenter(this)
+
+        presenter.getWeeklyWeatherData()
+
+
+    }
+
+    override fun getSharedPref(): Array<String?> {
+
         sharedPref = getSharedPreferences("loggedIn", Context.MODE_PRIVATE)
 
         val lat = sharedPref!!.getString("lat", "")
         val lon = sharedPref!!.getString("lon", "")
+        val units = sharedPref!!.getString("units", "")
 
-//        val lat = intent.getStringExtra("latitude")
-//        val lon = intent.getStringExtra("longitude")
-        val text = "Lat: $lat and Lon: $lon"
+        val coordinates = arrayOf(lat, lon, units)
 
-        weatherText.text = text
+       return coordinates
+
+    }
+
+    override fun displayCurrentWeather(response: Response<CurrentWeatherResponse>){
+
+        val data = response.body()
+
+        val current = data?.current
+
+        val temp = current?.temp
+
+        println("Current temp: " + temp)
 
 
     }

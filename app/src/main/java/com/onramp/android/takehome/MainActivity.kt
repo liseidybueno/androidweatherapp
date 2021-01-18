@@ -72,13 +72,19 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         val user = sharedPref!!.getString("name", "")
         val units = sharedPref!!.getString("units", "")
 
+       // println(AppPref.name)
+//        AppPref.setup(this)
+
+//        val user = AppPref.name
+//        val units = AppPref.units
+//
         if(user  == "" || user == null){
             presenter.start()
         } else {
             presenter.startLoggedIn(user, units!!)
         }
 
-        println("on create: " + sharedPref!!.getString("name", ""))
+//        println("on create: " + sharedPref!!.getString("name", ""))
 
         //  get the braodcast receiver
         broadcastReceiver = LocationBroadcastReceiver()
@@ -118,22 +124,14 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     override fun setUpUINotLoggedIn(){
 
-        var welcome_text = ""
-        var welcome_msg = ""
-        var enter_name = ""
-        var choose_units = ""
-        var metric_text = ""
-        var imperial_text = ""
-        var next_btn = ""
-
-        welcome_text = "Welcome to Quickcast!"
-        welcome_msg = "Thanks for using our app! Since this is your first time here, " +
+        val welcome_text = "Welcome to Quickcast!"
+        val welcome_msg = "Thanks for using our app! Since this is your first time here, " +
                     "please set your preferences below."
-        enter_name = "Enter your name"
-        choose_units = "Choose Units"
-        metric_text = "Metric"
-        imperial_text = "Imperial"
-        next_btn = "Save Info"
+        val enter_name = "Enter your name"
+        val choose_units = "Choose Units"
+        val metric_text = "Metric"
+        val imperial_text = "Imperial"
+        val next_btn = "Save Info"
 
         welcomeMsg.text = welcome_msg
         firstName.hint = enter_name
@@ -149,10 +147,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
     override fun setUpUILoggedIn(user: String, units: String){
         val welcome_text = "Welcome back, $user!"
         val welcome_msg = "Your units are set to $units"
-        //var next_btn = ""
         val get_forecastBtn = "Get Forecast"
-
-        //next_btn = "Get Forecast"
 
         welcomeMsg.text = welcome_msg
         firstName.visibility = View.GONE
@@ -181,7 +176,8 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         // store into shared preferences
         sharedPref!!.edit().putString("name", user).apply()
         sharedPref!!.edit().putString("units", units).apply()
-
+//        AppPref.name = user
+//        AppPref.units = units
 
     }
 
@@ -216,13 +212,7 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     fun startNewActivity(){
 
-//        val lat = location.latitude.toString()
-//        val lon = location.longitude.toString()
-
         val intent = Intent(applicationContext, WeatherActivity::class.java)
-//        intent.putExtra("latitude", lat)
-//        intent.putExtra("longitude", lon)
-
         startActivity(intent)
 
     }
@@ -306,9 +296,14 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         }
     }
 
-    private inner class LocationBroadcastReceiver : BroadcastReceiver() {
+    inner private class LocationBroadcastReceiver : BroadcastReceiver() {
+
+        private var sharedPref: SharedPreferences?= null
+
 
         override fun onReceive(context: Context?, intent: Intent?) {
+
+            sharedPref = getSharedPreferences("loggedIn", Context.MODE_PRIVATE)
 
             println("received broadcast")
 
@@ -328,21 +323,4 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         }
 
     }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-        return if (id == R.id.action_settings) {
-            true
-        } else super.onOptionsItemSelected(item)
-    }
-
 }

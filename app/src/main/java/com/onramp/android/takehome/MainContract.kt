@@ -36,8 +36,4 @@ interface MainContract {
         fun startWeatherActivity()
 
     }
-
-    interface Model {
-
-    }
 }
