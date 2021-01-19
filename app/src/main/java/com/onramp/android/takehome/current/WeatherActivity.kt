@@ -35,9 +35,11 @@ class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
         setContentView(R.layout.activity_weather)
 
         presenter = CurrentWeatherPresenter(this)
-        presenter.getWeeklyWeatherData()
+        presenter.getCurrentWeatherData()
 
-        details = findViewById<View>(R.id.WeatherDetailsContainer)
+
+        //show and hide fragment 
+        details = findViewById(R.id.WeatherDetailsContainer)
         details!!.visibility = View.INVISIBLE
         val btnText = "Show Details"
         showDetailsBtn.text = btnText
@@ -89,15 +91,32 @@ class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
 
         override fun displayCurrentWeather(response: Response<CurrentWeatherResponse>) {
 
-//        val data = response.body()
-//
-//        val current = data?.current
-//
-//        val temp = current?.temp
+            //get info from Db
+            //no parameters
+            //display info
 
-//        println("Current temp: " + temp)
+            val data = response.body()
+            val weather = data?.weather
+            val main = data?.main
+            val sys = data?.sys
+            val name = data?.name
+            val dt = data?.dt
+            val visibility = data?.visibility
+
+            val main_desc = weather?.get(0)?.main
+            val description = weather?.get(0)?.description
+
+            val temp = main?.temp
+            val tempLow = main?.temp_min
+            val tempHigh = main?.temp_max
+            val feelsLike = main?.feels_like
+            val humidity = main?.humidity
+
+            val sunrise = sys?.sunrise
+            val sunset = sys?.sunset
 
 
         }
+
     }
 

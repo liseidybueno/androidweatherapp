@@ -25,7 +25,7 @@ interface CurrentWeatherContract {
 
         fun onSuccess(response: Response<CurrentWeatherResponse>)
 
-        fun getWeeklyWeatherData()
+        fun getCurrentWeatherData()
 
     }
 }

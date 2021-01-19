@@ -21,7 +21,7 @@ class CurrentWeatherPresenter(
         view.displayCurrentWeather(response)
     }
 
-    override fun getWeeklyWeatherData() {
+    override fun getCurrentWeatherData() {
         model.getCurrentWeatherData(this)
     }
 
