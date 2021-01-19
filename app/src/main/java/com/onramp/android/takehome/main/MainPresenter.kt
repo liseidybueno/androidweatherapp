@@ -1,11 +1,11 @@
-package com.onramp.android.takehome
+package com.onramp.android.takehome.main
 
 import android.os.Handler
 
 class MainPresenter(
         view: MainContract.View
 
-) : MainContract.Presenter{
+) : MainContract.Presenter {
 
     private var view: MainContract.View? = view
 

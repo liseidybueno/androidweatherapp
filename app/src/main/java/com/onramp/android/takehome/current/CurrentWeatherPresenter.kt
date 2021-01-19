@@ -1,5 +1,6 @@
-package com.onramp.android.takehome
+package com.onramp.android.takehome.current
 
+import com.onramp.android.takehome.networking.CurrentWeatherResponse
 import retrofit2.Response
 
 class CurrentWeatherPresenter(
@@ -7,7 +8,7 @@ class CurrentWeatherPresenter(
 ) : CurrentWeatherContract.Presenter {
 
     private var view: CurrentWeatherContract.View = view
-    private var model:CurrentWeatherContract.Model = CurrentWeatherModel()
+    private var model: CurrentWeatherContract.Model = CurrentWeatherModel()
 
     override fun getData(): Array<String?>? {
 

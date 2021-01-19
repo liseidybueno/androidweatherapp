@@ -1,4 +1,4 @@
-package com.onramp.android.takehome;
+package com.onramp.android.takehome.App;
 
 import android.app.Application;
 import android.content.res.Resources;

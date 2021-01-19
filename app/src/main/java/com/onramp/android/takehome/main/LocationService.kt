@@ -1,4 +1,4 @@
-package com.onramp.android.takehome
+package com.onramp.android.takehome.main
 
 import android.app.*
 import android.content.Intent
@@ -87,7 +87,7 @@ class LocationService : Service() {
 
     inner class LocalBinder : Binder(){
         internal val service: LocationService
-        get() = this@LocationService
+            get() = this@LocationService
     }
 
 

@@ -1,11 +1,10 @@
-package com.onramp.android.takehome
+package com.onramp.android.takehome.current
 
-import android.content.Context
-import android.content.res.Resources
-import android.provider.Settings.Global.getString
-import android.provider.Settings.System.getString
-import com.onramp.android.takehome.weatherNetworking.OWDEndpoints
-import com.onramp.android.takehome.weatherNetworking.ServiceBuilder
+import com.onramp.android.takehome.App.App
+import com.onramp.android.takehome.R
+import com.onramp.android.takehome.networking.CurrentWeatherResponse
+import com.onramp.android.takehome.networking.OWDEndpoints
+import com.onramp.android.takehome.networking.ServiceBuilder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -24,7 +23,7 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
         val lat = coord?.get(0).toString()
         val long = coord?.get(1).toString()
         val units = coord?.get(2).toString().toLowerCase(Locale.ROOT)
-        val exclude = "minutely,hourly,alerts"
+        val exclude = "daily,minutely,hourly,alerts"
         val api_key = App.getResource().getString(R.string.api_key)
 
         val request = ServiceBuilder.buildService(OWDEndpoints::class.java)
@@ -40,8 +39,6 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                     presenter.onSuccess(response)
 
                     println("Success!")
-
-
 
                 } else {
                     println("response not successful")

@@ -1,19 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".WeatherActivity"
+    tools:context=".current.WeatherActivity"
+    android:background="#d8fbff"
     tools:deviceIds="wear">
 
-        <TextView
-            android:id="@+id/weatherText"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="100dp"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/hello_world" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="32dp"
+            android:orientation="vertical">
 
-</LinearLayout>
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="200dp"
+                    android:src="@drawable/umbrella"
+                    android:layout_gravity="center_horizontal"/>
+
+                <TextView
+                    android:id="@+id/currDate"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="January 17 in New York"
+                    android:textSize="28sp"/>
+
+                <TextView
+                    android:id="@+id/message"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Brrr, it's cold!"
+                    android:textSize="26sp"/>
+
+                <TextView
+                    android:id="@+id/currTemp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="26 F"
+                    android:textSize="26sp"/>
+
+                <TextView
+                    android:id="@+id/someDetails"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Overcast clouds."
+                    android:textSize="22sp"/>
+
+                <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/showDetailsBtn"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="16dp"
+                    android:text="See More Details"/>
+
+                <androidx.fragment.app.FragmentContainerView
+                    android:name="com.onramp.android.takehome.WeatherDetails"
+                    android:id="@+id/WeatherDetailsContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="48dp"/>
+
+        </LinearLayout>
+
+
+</RelativeLayout>

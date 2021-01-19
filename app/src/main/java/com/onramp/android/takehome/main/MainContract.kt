@@ -1,4 +1,4 @@
-package com.onramp.android.takehome
+package com.onramp.android.takehome.main
 
 import android.location.Location
 

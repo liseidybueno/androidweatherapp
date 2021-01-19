@@ -1,4 +1,4 @@
-package com.onramp.android.takehome.weatherNetworking
+package com.onramp.android.takehome.networking
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

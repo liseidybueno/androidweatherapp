@@ -1,4 +1,4 @@
-package com.onramp.android.takehome
+package com.onramp.android.takehome.main
 
 /**NOTES:
  * Move location requests to weather activity page
@@ -6,7 +6,6 @@ package com.onramp.android.takehome
  * if they have logged in, go straight to weather activity
  */
 import android.Manifest
-import android.annotation.SuppressLint
 import android.content.*
 import android.content.pm.PackageManager
 import android.location.Location
@@ -15,13 +14,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.provider.Settings
-import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.RadioButton
 import androidx.core.app.ActivityCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.android.material.snackbar.Snackbar
+import com.onramp.android.takehome.BuildConfig
+import com.onramp.android.takehome.R
+import com.onramp.android.takehome.current.WeatherActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 val PERMISSION_REQUEST_CODE = 200
@@ -91,6 +91,8 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
             presenter.startWeatherActivity()
         }
+
+
 
     }
 

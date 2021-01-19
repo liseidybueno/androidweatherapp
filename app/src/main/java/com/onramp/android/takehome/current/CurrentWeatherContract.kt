@@ -1,5 +1,6 @@
-package com.onramp.android.takehome
+package com.onramp.android.takehome.current
 
+import com.onramp.android.takehome.networking.CurrentWeatherResponse
 import retrofit2.Response
 
 interface CurrentWeatherContract {
