@@ -14,10 +14,11 @@
         android:layout_marginBottom="48dp">
 
         <ImageView
+            android:id="@+id/weatherImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/umbrella"/>
+            android:layout_marginRight="32dp"
+            android:layout_gravity="center_vertical"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -73,12 +74,20 @@
                 android:text="Visibility: 10 mi." />
 
             <TextView
-                android:id="@+id/sunriseSunsetText"
+                android:id="@+id/sunriseText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_gravity="center_horizontal"
-                android:text="Sunrise: 7:00 am Sunset: 8:00 am" />
+                android:text="Sunrise: 7:00" />
+
+            <TextView
+                android:id="@+id/sunsetText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_gravity="center_horizontal"
+                android:text="Sunset: 8:00 am" />
 
 
 

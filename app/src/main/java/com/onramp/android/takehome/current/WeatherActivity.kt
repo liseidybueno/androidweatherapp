@@ -94,6 +94,7 @@ class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
 
         mainImg.setBackgroundResource(weatherData.mainImg)
         currDate.text = weatherData.date
+        city.text = weatherData.name
         message.text = weatherData.message
         currTemp.text = weatherData.temp
         someDetails.text = weatherData.description
@@ -105,6 +106,13 @@ class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
         val weatherDetails = WeatherDetails()
         val bundle = Bundle()
         bundle.putString("feelsLike", weatherData.feelsLike)
+        bundle.putString("low", weatherData.min)
+        bundle.putString("high", weatherData.max)
+        bundle.putString("humidity", weatherData.humidity)
+        bundle.putString("visibility", weatherData.visibility)
+        bundle.putString("sunrise", weatherData.sunrise)
+        bundle.putString("sunset", weatherData.sunset)
+        bundle.putInt("img", weatherData.weatherImg)
         weatherDetails.arguments = bundle
         fragmentTransaction.add(R.id.WeatherDetailsContainer, weatherDetails).commit()
 

@@ -15,7 +15,7 @@ import kotlin.math.roundToInt
 class CurrentWeatherModel : CurrentWeatherContract.Model {
 
     data class CurrentWeatherData(val name: String, val date: String, val temp: String,
-                                  val feelsLike: String, val minMax: String, val sunrise: String,
+                                  val feelsLike: String, val min: String, val max: String, val sunrise: String,
                                   val sunset: String, val humidity: String, val visibility: String,
                                   val mainImg: Int, val weatherImg: Int, val message: String, val description: String)
 
@@ -65,7 +65,7 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                     val unformattedDate = data!!.dt
                     val sdf = SimpleDateFormat("MMMM DD")
                     val newDate = Date(unformattedDate * 1000)
-                    val date = sdf.format(newDate).toString() + "in $name"
+                    val date = sdf.format(newDate).toString()
 
                     //visibility
                     var visibilityText = ""
@@ -98,11 +98,14 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                     }
 
                     //low high
-                    var lowHighText = ""
+                    var lowText = ""
+                    var highText = ""
                     if(units == "imperial"){
-                        lowHighText = "Low: $tempLow°F \n High: $tempHigh°F"
+                        lowText = "Low: $tempLow°F"
+                        highText = "High: $tempHigh°F"
                     } else {
-                        lowHighText = "Low: $tempLow°C \n High $tempHigh°C "
+                        lowText = "Low: $tempLow°C"
+                        highText = "High $tempHigh°C "
                     }
 
                     //humidity
@@ -129,12 +132,12 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                     val weatherImg = getWeatherImg(timeOfDay, main_desc, description!!)
 
                     //get weather message
-                    val message = getMessage(temp, main_desc, description)
+                    val message = getMessage(temp, main_desc, units)
 
                     //create weather object
 
                     val currentWeather = CurrentWeatherData(name, date, tempText, feelsLikeText,
-                    lowHighText, sunriseText, sunsetText, humidityText, visibilityText, mainImg, weatherImg,
+                    lowText, highText, sunriseText, sunsetText, humidityText, visibilityText, mainImg, weatherImg,
                             message, description)
 
                     presenter.onSuccess(currentWeather)
@@ -206,7 +209,7 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
         //if clear, cloudy, or partly cloudy:
         //if temp < 32 F or 0 C, show coat
         if(main_desc == "Clear" || main_desc == "Clouds"){
-            if(units == "farenheit"){
+            if(units == "imperial"){
                 if(temp < 32){
                     img = R.drawable.coat
                 } else if(temp > 32 && temp < 50){
@@ -245,7 +248,7 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
         //if clear, cloudy, or partly cloudy:
         //if temp < 32 F or 0 C, show coat
         if(main_desc == "Clear" || main_desc == "Clouds"){
-            if(units == "farenheit"){
+            if(units == "imperial"){
                 message = if(temp < 32){
                     "Brrr, it's cold! Bundle up!"
                 } else if(temp in 33..49){
