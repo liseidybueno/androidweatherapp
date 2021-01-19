@@ -14,10 +14,10 @@ import kotlin.math.roundToInt
 
 class CurrentWeatherModel : CurrentWeatherContract.Model {
 
-    data class CurrentWeatherData(val mainImg: Int,val weatherImg: Int, val date: String, val temp: String,
-                                  val name: String,  val feelsLike: String, val sunSunset: String,
-                                  val lowHigh: String, val visibility: String, val message: String,
-                                  val humidity: String, val main: String, val description: String)
+    data class CurrentWeatherData(val name: String, val date: String, val temp: String,
+                                  val feelsLike: String, val minMax: String, val sunrise: String,
+                                  val sunset: String, val humidity: String, val visibility: String,
+                                  val mainImg: Int, val weatherImg: Int, val message: String, val description: String)
 
     override fun getCurrentWeatherData(presenter: CurrentWeatherContract.Presenter) {
 
@@ -26,12 +26,11 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
         val lat = coord?.get(0).toString()
         val long = coord?.get(1).toString()
         val units = coord?.get(2).toString().toLowerCase(Locale.ROOT)
-        val exclude = "daily,minutely,hourly,alerts"
         val api_key = App.getResource().getString(R.string.api_key)
 
         val request = ServiceBuilder.buildService(OWDEndpoints::class.java)
 
-        val call = request.getCurrentWeatherData(lat, long, exclude, units, api_key)
+        val call = request.getCurrentWeatherData(lat, long, units, api_key)
 
         call.enqueue(object : Callback<CurrentWeatherResponse>{
 
@@ -39,16 +38,17 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
 
                 if(response.isSuccessful){
 
+                    println("Success!")
+
                     val data = response.body()
                     val weather = data?.weather
                     val main = data?.main
                     val sys = data?.sys
                     val name = data?.name.toString()
-                    val dt = data?.dt
                     val visibility = data?.visibility
 
                     val main_desc = weather?.get(0)?.main
-                    val description = weather?.get(0)?.description
+                    val description = weather?.get(0)?.description?.capitalize()
 
                     val temp = main?.temp?.roundToInt()
                     val tempLow = main?.temp_min?.roundToInt()
@@ -65,7 +65,7 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                     val unformattedDate = data!!.dt
                     val sdf = SimpleDateFormat("MMMM DD")
                     val newDate = Date(unformattedDate * 1000)
-                    val date = sdf.format(newDate)
+                    val date = sdf.format(newDate).toString() + "in $name"
 
                     //visibility
                     var visibilityText = ""
@@ -92,9 +92,9 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                     //feels like
                     var feelsLikeText = ""
                     if(units == "imperial"){
-                        feelsLikeText = "$feelsLike°F"
+                        feelsLikeText = "Feels Like: $feelsLike°F"
                     } else {
-                        feelsLikeText = "$feelsLike°C"
+                        feelsLikeText = "Feels Like: $feelsLike°C"
                     }
 
                     //low high
@@ -109,7 +109,7 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                     val humidityText = "Humidity: $humidity%"
 
                     //get main img
-                    val mainImg = getMainImg(temp!!, main_desc!!, description!!)
+                    val mainImg = getMainImg(temp!!, main_desc!!, units)
 
                     //get time of day
                     val timeOfDay = if (unformattedDate > data.sys.sunset) {
@@ -118,19 +118,26 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                         "am"
                     }
 
+                    //sunrise/sunset
+                    val sunriseFormatted = setTime(sunrise)
+                    val sunsetFormatted = setTime(sunset)
+
+                    val sunriseText = "Sunrise: $sunriseFormatted"
+                    val sunsetText = "Sunset: $sunsetFormatted"
+
                     //get weather img
-                    val weatherImg = getWeatherImg(timeOfDay, main_desc, description)
+                    val weatherImg = getWeatherImg(timeOfDay, main_desc, description!!)
 
                     //get weather message
                     val message = getMessage(temp, main_desc, description)
 
-                    //insert into DB
+                    //create weather object
 
-                    //no response here
-                    presenter.onSuccess(response)
+                    val currentWeather = CurrentWeatherData(name, date, tempText, feelsLikeText,
+                    lowHighText, sunriseText, sunsetText, humidityText, visibilityText, mainImg, weatherImg,
+                            message, description)
 
-                    println("Success!")
-
+                    presenter.onSuccess(currentWeather)
                 } else {
                     println("response not successful")
                 }
@@ -267,6 +274,15 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
         }
 
         return message
+
+    }
+
+    private fun setTime(time: Long?): String {
+        val nonNullable: Long = time!!
+        val sdf = SimpleDateFormat("hh:mm a")
+        val newTime = Date(nonNullable * 1000)
+        val timeFormatted = sdf.format(newTime)
+        return timeFormatted
 
     }
 }

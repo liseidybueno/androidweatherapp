@@ -1,8 +1,5 @@
 package com.onramp.android.takehome.current
 
-import com.onramp.android.takehome.networking.CurrentWeatherResponse
-import retrofit2.Response
-
 class CurrentWeatherPresenter(
         view: CurrentWeatherContract.View
 ) : CurrentWeatherContract.Presenter {
@@ -12,22 +9,24 @@ class CurrentWeatherPresenter(
 
     override fun getData(): Array<String?>? {
 
-        val data = view.getSharedPref()
-
-        return data
+        return view.getSharedPref()
     }
 
-    override fun onSuccess(response: Response<CurrentWeatherResponse>){
-        view.displayCurrentWeather(response)
+//    override fun onSuccess(response: Response<CurrentWeatherResponse>){
+//        view.displayCurrentWeather(response)
+//    }
+
+    override fun onSuccess(weatherData: CurrentWeatherModel.CurrentWeatherData) {
+        view.displayCurrentWeather(weatherData)
+        //view.sendDataToFragment(weatherData)
     }
+//
+//    override fun sendDataToDetails(weatherData: CurrentWeatherModel.CurrentWeatherData){
+//        view.sendDataToFragment(weatherData)
+//    }
 
     override fun getCurrentWeatherData() {
         model.getCurrentWeatherData(this)
     }
-
-//    override fun showCoords() {
-//
-//        model.getCurrentWeatherData(this)
-//    }
 
 }

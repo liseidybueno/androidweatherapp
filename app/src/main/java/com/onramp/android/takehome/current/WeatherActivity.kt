@@ -14,10 +14,12 @@ import android.os.Bundle
 import android.view.View
 import android.view.animation.TranslateAnimation
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.onramp.android.takehome.R
-import com.onramp.android.takehome.networking.CurrentWeatherResponse
+import com.onramp.android.takehome.WeatherDetails
 import kotlinx.android.synthetic.main.activity_weather.*
-import retrofit2.Response
+import kotlinx.android.synthetic.main.fragment_weather_details.*
 
 class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
 
@@ -37,8 +39,7 @@ class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
         presenter = CurrentWeatherPresenter(this)
         presenter.getCurrentWeatherData()
 
-
-        //show and hide fragment 
+        //show and hide fragment
         details = findViewById(R.id.WeatherDetailsContainer)
         details!!.visibility = View.INVISIBLE
         val btnText = "Show Details"
@@ -89,34 +90,27 @@ class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
 
         }
 
-        override fun displayCurrentWeather(response: Response<CurrentWeatherResponse>) {
+    override fun displayCurrentWeather(weatherData: CurrentWeatherModel.CurrentWeatherData){
 
-            //get info from Db
-            //no parameters
-            //display info
+        mainImg.setBackgroundResource(weatherData.mainImg)
+        currDate.text = weatherData.date
+        message.text = weatherData.message
+        currTemp.text = weatherData.temp
+        someDetails.text = weatherData.description
 
-            val data = response.body()
-            val weather = data?.weather
-            val main = data?.main
-            val sys = data?.sys
-            val name = data?.name
-            val dt = data?.dt
-            val visibility = data?.visibility
+        println("Feels like: " + weatherData.feelsLike)
 
-            val main_desc = weather?.get(0)?.main
-            val description = weather?.get(0)?.description
-
-            val temp = main?.temp
-            val tempLow = main?.temp_min
-            val tempHigh = main?.temp_max
-            val feelsLike = main?.feels_like
-            val humidity = main?.humidity
-
-            val sunrise = sys?.sunrise
-            val sunset = sys?.sunset
-
-
-        }
+        val fragmentManager: FragmentManager = supportFragmentManager
+        val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+        val weatherDetails = WeatherDetails()
+        val bundle = Bundle()
+        bundle.putString("feelsLike", weatherData.feelsLike)
+        weatherDetails.arguments = bundle
+        fragmentTransaction.add(R.id.WeatherDetailsContainer, weatherDetails).commit()
 
     }
+
+
+
+}
 
