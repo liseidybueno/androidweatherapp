@@ -10,11 +10,11 @@ The application uses a foreground service to get the location and OpenWeatherMap
 
 ### Requirements Met
 Activities: MainActivity & WeatherActivity
-Fragment: WeatherDetails
-Service: LocationService
-UI Elements: Snackbar, Buttons, EditText, Radio Buttons, ImageViews, Animations (slide up/down on fragment)
-API: OpenWeatherMap API via Retrofit
-Data Persistence: Store data via SharedPreferences 
+<br>Fragment: WeatherDetails
+<br>Service: LocationService
+<br>UI Elements: Snackbar, Buttons, EditText, Radio Buttons, ImageViews, Animations (slide up/down on fragment)
+<br>API: OpenWeatherMap API via Retrofit
+<br>Data Persistence: Store data via SharedPreferences 
 
 #### Photos & Details 
 
