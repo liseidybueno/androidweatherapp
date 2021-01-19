@@ -28,6 +28,7 @@ val PERMISSION_REQUEST_CODE = 200
 
 class MainActivity : AppCompatActivity(), MainContract.View {
 
+    //get location service and broadcast receiver
     private var locationServiceBound = false
 
     private var locationService: LocationService? = null
@@ -49,29 +50,24 @@ class MainActivity : AppCompatActivity(), MainContract.View {
 
     }
 
+    //get presenter
     private lateinit var presenter: MainContract.Presenter
 
+    //user shared preferences to persist data
     private var sharedPref: SharedPreferences ?= null
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        /*if the shared preferences are true (ie they have signed in before, show a welcome
-        message with their name and option to change units.
-        if the shared preferences are not true, show welcome message where user inputs name
-        and chooses units.
-         */
-
-
         presenter = MainPresenter(this)
         sharedPref = getSharedPreferences("loggedIn", Context.MODE_PRIVATE)
 
+        //get user and units
         val user = sharedPref!!.getString("name", "")
         val units = sharedPref!!.getString("units", "")
 
+        //if preferences are blank/null, show sign up page
         if(user  == "" || user == null){
             presenter.start()
         } else {
@@ -81,12 +77,14 @@ class MainActivity : AppCompatActivity(), MainContract.View {
         //  get the braodcast receiver
         broadcastReceiver = LocationBroadcastReceiver()
 
+        //next button shows name and units
         nextBtn.setOnClickListener{
 
             presenter.onBtnClick()
 
         }
 
+        //get forecast button starts weather activity with units, lat and lon
         getForecastBtn.setOnClickListener {
 
             presenter.startWeatherActivity()

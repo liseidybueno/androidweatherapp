@@ -38,8 +38,6 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
 
                 if(response.isSuccessful){
 
-                    println("Success!")
-
                     val data = response.body()
                     val weather = data?.weather
                     val main = data?.main
@@ -48,7 +46,7 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                     val visibility = data?.visibility
 
                     val main_desc = weather?.get(0)?.main
-                    val description = weather?.get(0)?.description?.capitalize()
+                    val description = weather?.get(0)?.description?.capitalize(Locale.ROOT)
 
                     val temp = main?.temp?.roundToInt()
                     val tempLow = main?.temp_min?.roundToInt()
@@ -59,7 +57,7 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                     val sunrise = sys?.sunrise
                     val sunset = sys?.sunset
 
-                    //create data object
+                    //create data class
 
                     //date
                     val unformattedDate = data!!.dt
@@ -134,7 +132,7 @@ class CurrentWeatherModel : CurrentWeatherContract.Model {
                     //get weather message
                     val message = getMessage(temp, main_desc, units)
 
-                    //create weather object
+                    //create weather data class
 
                     val currentWeather = CurrentWeatherData(name, date, tempText, feelsLikeText,
                     lowText, highText, sunriseText, sunsetText, humidityText, visibilityText, mainImg, weatherImg,

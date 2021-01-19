@@ -1,7 +1,5 @@
 package com.onramp.android.takehome.main
 
-import android.location.Location
-
 interface MainContract {
 
     interface View {

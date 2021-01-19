@@ -9,23 +9,18 @@ class CurrentWeatherPresenter(
 
     override fun getData(): Array<String?>? {
 
+        //use getData() to send sharedPref data to model and use to make API call
         return view.getSharedPref()
     }
 
-//    override fun onSuccess(response: Response<CurrentWeatherResponse>){
-//        view.displayCurrentWeather(response)
-//    }
-
     override fun onSuccess(weatherData: CurrentWeatherModel.CurrentWeatherData) {
+
         view.displayCurrentWeather(weatherData)
-        //view.sendDataToFragment(weatherData)
+
     }
-//
-//    override fun sendDataToDetails(weatherData: CurrentWeatherModel.CurrentWeatherData){
-//        view.sendDataToFragment(weatherData)
-//    }
 
     override fun getCurrentWeatherData() {
+
         model.getCurrentWeatherData(this)
     }
 

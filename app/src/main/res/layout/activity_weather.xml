@@ -83,4 +83,4 @@
 
 </RelativeLayout>
 
-    <!--                    android:name="com.onramp.android.takehome.WeatherDetails"-->
+    <!--                    android:name="com.onramp.android.takehome.current.WeatherDetails"-->

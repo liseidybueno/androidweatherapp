@@ -1,4 +1,4 @@
-package com.onramp.android.takehome
+package com.onramp.android.takehome.current
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,13 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import kotlinx.android.synthetic.main.fragment_weather_details.*
+import com.onramp.android.takehome.R
 
 class WeatherDetails : Fragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
+        //get arguments
         val args = arguments
         val feelsLike = args?.getString("feelsLike", "")
         val tempLow = args?.getString("low", "")
@@ -24,10 +25,7 @@ class WeatherDetails : Fragment(){
         val sunset = args?.getString("sunset", "")
         val img = args?.getInt("img", 0)
 
-        println("Args: " + args)
-
-        println("Fragment: " + feelsLike)
-
+        //get views
         val rootView = inflater.inflate(R.layout.fragment_weather_details, container, false)
         val feelsLikeTextView = rootView.findViewById<TextView>(R.id.feelsLikeText)
         val tempMinTextView = rootView.findViewById<TextView>(R.id.tempMinText)
@@ -38,6 +36,7 @@ class WeatherDetails : Fragment(){
         val sunsetTextView = rootView.findViewById<TextView>(R.id.sunsetText)
         val imageView = rootView.findViewById<ImageView>(R.id.weatherImg)
 
+        //set views
         feelsLikeTextView.text = feelsLike
         tempMinTextView.text = tempLow
         tempMaxTextView.text = tempHigh

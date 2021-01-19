@@ -17,9 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.onramp.android.takehome.R
-import com.onramp.android.takehome.WeatherDetails
 import kotlinx.android.synthetic.main.activity_weather.*
-import kotlinx.android.synthetic.main.fragment_weather_details.*
 
 class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
 
@@ -27,7 +25,7 @@ class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
 
     private lateinit var presenter: CurrentWeatherContract.Presenter
 
-
+    //variables to slide fragment up and down
     var details: View ?= null
 
     var isUp: Boolean ?= null
@@ -76,22 +74,23 @@ class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
         view.startAnimation(animate)
     }
 
-        override fun getSharedPref(): Array<String?> {
+    override fun getSharedPref(): Array<String?> {
 
-            sharedPref = getSharedPreferences("loggedIn", Context.MODE_PRIVATE)
+        sharedPref = getSharedPreferences("loggedIn", Context.MODE_PRIVATE)
 
-            val lat = sharedPref?.getString("lat", "")
-            val lon = sharedPref?.getString("lon", "")
-            val units = sharedPref?.getString("units", "")
+        val lat = sharedPref?.getString("lat", "")
+        val lon = sharedPref?.getString("lon", "")
+        val units = sharedPref?.getString("units", "")
 
-            val coordinates = arrayOf(lat, lon, units)
+        val coordinates = arrayOf(lat, lon, units)
 
-            return coordinates
+        return coordinates
 
-        }
+    }
 
     override fun displayCurrentWeather(weatherData: CurrentWeatherModel.CurrentWeatherData){
 
+        //display in activity
         mainImg.setBackgroundResource(weatherData.mainImg)
         currDate.text = weatherData.date
         city.text = weatherData.name
@@ -99,8 +98,7 @@ class WeatherActivity : AppCompatActivity(), CurrentWeatherContract.View {
         currTemp.text = weatherData.temp
         someDetails.text = weatherData.description
 
-        println("Feels like: " + weatherData.feelsLike)
-
+        //display in fragment
         val fragmentManager: FragmentManager = supportFragmentManager
         val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
         val weatherDetails = WeatherDetails()

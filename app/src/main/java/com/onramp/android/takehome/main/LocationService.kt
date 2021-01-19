@@ -44,11 +44,9 @@ class LocationService : Service() {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(p0: LocationResult?) {
                 super.onLocationResult(p0)
-                println("last location: " + p0?.lastLocation)
                 if(p0?.lastLocation != null){
                     currentLocation = p0.lastLocation
 
-                    println("Current location: " + currentLocation)
 
                     val intent = Intent(ACTION_FOREGROUND_ONLY_LOCATION_BROADCAST)
                     intent.putExtra(EXTRA_LOCATION, currentLocation)
@@ -65,7 +63,6 @@ class LocationService : Service() {
     override fun onBind(intent: Intent?): IBinder? {
         stopForeground(true)
         serviceRunningInForeground = false
-        println("local binder")
         return localBinder
     }
 
@@ -74,14 +71,12 @@ class LocationService : Service() {
         startService(Intent(applicationContext, LocationService::class.java))
 
         try {
-            println("Subscribed to update")
             fusedLocationProviderClient.requestLocationUpdates(
                     locationRequest, locationCallback, Looper.myLooper()
             )
         } catch(unlikely: SecurityException){
             println("Lost location permissions.")
         }
-
 
     }
 
